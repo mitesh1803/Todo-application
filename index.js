@@ -1,8 +1,16 @@
 const express = require("express")
 const app =express()
+const fs=require("fs")
 app.use(express.json())
 
 let todo =[]
+
+try{
+  const data =fs.readFileSync("todos.json","utf-8")
+  todo =JSON.parse(data)
+}catch(err){
+  console.log("No existing data")
+}
 
 app.get("/todos",(req,res)=>{
     res.json(todo);
@@ -31,6 +39,7 @@ app.post("/todos",(req,res)=>{
     };
 
     todo.push(newTodo);
+    fs.writeFileSync("todos.json",JSON.stringify(todo,null,2))
     res.status(201).json({
         mssg:"Todo created successfully",
         id: newTodo.id })
@@ -48,7 +57,7 @@ app.put("/todos/:id",(req,res)=> {
       if (req.body.description !== undefined) {
         todoItem.description = req.body.description
       }
-      
+      fs.writeFileSync("todos.json",JSON.stringify(todo,null,2))
       res.json({mssg:"Updated"})
 })
 
@@ -64,7 +73,7 @@ app.delete("/todos/:id", (req, res) => {
     }
     
     todo = todo.filter(t => t.id !== id)
-  
+    fs.writeFileSync("todos.json",JSON.stringify(todo,null,2))
     res.json({ message: "Todo deleted" })
   })
 
