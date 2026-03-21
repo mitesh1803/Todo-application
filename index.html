@@ -6,13 +6,77 @@
     <title>Document</title>
 </head>
 <body>
-    <input type="text" placeholder="title"><br><br>
-    <input type="text" placeholder="description"><br><br>
-    <button onclick="addTodo">Add todo</button><br><br>
+    <input id="title" type="text" placeholder="title"><br><br>
+    <input id="description" text" placeholder="description"><br><br>
+    <input id="id" text" placeholder="Todo Id"><br><br>
+    <button onclick="addTodo()">Add todo</button>
+    <button onclick="updateTodo()">Update</button>
+    <button onclick="deleteTodo()"">Delete</button>
+    <p id="sucess"></p>
+    <p id="updated"></p>
+    <p id="delete"></p>
+    <ul id="list"></ul>
+
 </body>
 <script>
-     addTodo=>{
-        
+    async function getTodos(){
+        const res=await fetch("/todos")
+        const todo=await res.json()
+        const list =document.getElementById("list")
+        list.innerHTML=" "
+        todo.forEach(todo=>{
+            const li=document.createElement("li")
+            li.innerText="Title:("+todo.title+")id:("+todo.id+")"
+            list.appendChild(li)
+        })
     }
+    const addTodo=async ()=> {
+        const title = document.getElementById("title").value
+        const description = document.getElementById("description").value
+
+        await fetch("/todos", {
+            method: "POST",
+            headers: {
+            "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ title, description })
+        })
+            document.getElementById("sucess").innerHTML="Todo Successfully Created"
+
+         getTodos()
+    }
+    document.addEventListener("DOMContentLoaded", () => {
+     getTodos()
+    })
+  
+    const updateTodo=async ()=>{
+        const id=document.getElementById("id").value
+        const title = document.getElementById("title").value
+        const description = document.getElementById("description").value
+
+        const res=fetch(`/todos/${id}`,{
+        method: "PUT",
+        headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ title, description })
+    }) 
+    
+    document.getElementById("updated").innerHTML="Todo Successfully Updated"
+    getTodos()
+    }
+
+    const deleteTodo=async()=>{
+         const id=document.getElementById("id").value
+        const res=fetch(`/todos/${id}`,{
+        method: "DELETE",
+        headers: {
+        "Content-Type": "application/json"
+        }
+    }) 
+    document.getElementById("delete").innerHTML="Todo Deleted"
+    getTodos()
+    }
+    
 </script>
 </html>

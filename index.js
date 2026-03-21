@@ -12,6 +12,10 @@ try{
   console.log("No existing data")
 }
 
+app.get("/",(req,res)=>{
+  res.sendFile(__dirname+"/index.html")
+})
+
 app.get("/todos",(req,res)=>{
     res.json(todo);
 })
