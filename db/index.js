@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 
-mongoose.connect('mongodb+srv://admin:meetesh123@cluster0.owqejh0.mongodb.net/todo-app')
+mongoose.connect('')
     .then(()=>console.log("Database connected"))
     .catch(err=>console.log("Error occured",err))
 
